@@ -52,8 +52,95 @@ class InboxScreen extends StatelessWidget {
             title: Text(email['sender']!, style: const TextStyle(fontWeight: FontWeight.w600)),
             subtitle: Text(email['title']!, style: const TextStyle(color: Colors.grey)),
             trailing: Text(email['time']!, style: const TextStyle(color: Colors.grey)),
+            onTap: email['sender'] == 'GitLab'
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => EmailDetailScreen(email: email)),
+              );
+            }
+          : () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Это письмо пока не реализовано')),
+              );
+            },
           );
         },
+      ),
+    );
+  }
+}
+
+class EmailDetailScreen extends StatelessWidget {
+  final Map<String, String> email;
+  const EmailDetailScreen({super.key, required this.email});
+
+  Widget infoRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(width: 110, child: Text(title, style: const TextStyle(color: Colors.grey))),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(email['title']!),
+        actions: const [Icon(Icons.delete_outline), SizedBox(width: 12), Icon(Icons.mail_outline), SizedBox(width: 12)],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                CircleAvatar(radius: 24, child: Icon(Icons.person)),
+                SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("GitLab", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text("to me", style: TextStyle(color: Colors.grey)),
+                  ],
+                )
+              ],
+            ),
+            const SizedBox(height: 20),
+            Container(
+              decoration: BoxDecoration(color: const Color(0xFF2A2A2A), borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  infoRow("Hostname", "gitlab.com"),
+                  infoRow("User", "Ivan Ivanov"),
+                  infoRow("IP Address", "88.216.214.163"),
+                  infoRow("Location", "Stockholm, Sweden"),
+                  infoRow("Time", "2026-04-10 12:20:53 UTC"),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text("If you recently signed in...", style: TextStyle(color: Colors.grey)),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(child: ElevatedButton(onPressed: () {}, child: const Text("Ответить"))),
+            const SizedBox(width: 10),
+            Expanded(child: OutlinedButton(onPressed: () {}, child: const Text("Переслать"))),
+          ],
+        ),
       ),
     );
   }
