@@ -37,7 +37,7 @@ class InboxScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Почта")),
       // Drawer (боковое меню) пока закомментирован, так как класс еще не создан
-      // drawer: const CategoriesScreen(), 
+      drawer: const CategoriesScreen(), 
       body: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: emails.length,
@@ -54,6 +54,28 @@ class InboxScreen extends StatelessWidget {
             trailing: Text(email['time']!, style: const TextStyle(color: Colors.grey)),
           );
         },
+      ),
+    );
+  }
+}
+class CategoriesScreen extends StatelessWidget {
+  const CategoriesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer( // Оборачиваем в Drawer для корректного отображения
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: const [
+          DrawerHeader(child: Text("Gmail", style: TextStyle(fontSize: 20))),
+          ListTile(title: Text("Несортированные")),
+          ListTile(title: Text("Промоакции")),
+          ListTile(title: Text("Соцсети")),
+          ListTile(title: Text("Оповещения")),
+          Divider(),
+          ListTile(title: Text("Спам")),
+          ListTile(title: Text("Корзина")),
+        ],
       ),
     );
   }
